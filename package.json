@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/bigacz/file-drive#readme",
   "dependencies": {
+    "ejs": "^7.0.2",
     "express": "^5.3.0"
   }
 }
