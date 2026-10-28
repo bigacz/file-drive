@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
-const PORT = process.env_APPLICATION_PORT || 3000;
+const PORT = process.env.APP_PORT || 3000;
 app.listen(PORT, (error) => {
   if (error) {
     throw new Error(error);
