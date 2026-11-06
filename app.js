@@ -1,8 +1,7 @@
 import express from 'express';
 import session from './config/session.js';
-import passport from 'passport';
-import LocalStrategy from 'passport-local';
-import prisma from './prisma/prisma.js';
+import passport from './config/passport.js';
+import mainRouter from './routers/mainRouter.js';
 
 const app = express();
 
@@ -14,54 +13,8 @@ app.set('views', process.cwd() + '/views');
 
 app.use(session);
 
-// passport
-
-import bcrypt from 'bcryptjs';
-import mainRouter from './routers/mainRouter.js';
-
 app.use(passport.initialize());
 app.use(passport.session());
-
-passport.use(
-  new LocalStrategy(
-    { usernameField: 'email', passwordField: 'password' },
-    async (username, password, done) => {
-      const user = await prisma.user.findUnique({
-        where: {
-          username: username,
-        },
-      });
-
-      if (!user) {
-        return done(null, false);
-      }
-
-      const hashedPassword = user.password;
-
-      const isCorrect = await bcrypt.compare(password, hashedPassword);
-
-      if (isCorrect) {
-        return done(null, user);
-      } else {
-        return done(null, false);
-      }
-    },
-  ),
-);
-
-passport.serializeUser((user, done) => {
-  return done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      id: id,
-    },
-  });
-
-  return done(null, user);
-});
 
 app.get('/', (req, res) => {
   res.render('index');
