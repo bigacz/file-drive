@@ -1,6 +1,5 @@
 import router from 'express';
 import mainController from '../controllers/mainController.js';
-mainController;
 
 const mainRouter = router();
 

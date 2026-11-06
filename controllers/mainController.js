@@ -8,7 +8,12 @@ const getLogin = (req, res) => {
   res.render('login');
 };
 
-const postLogin = [passport.authenticate('local'), (req, res) => {}];
+const postLogin = [
+  passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/',
+  }),
+];
 
 const getRegister = (req, res) => {
   res.render('register');

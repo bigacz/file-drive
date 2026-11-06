@@ -14,44 +14,60 @@ app.set('views', process.cwd() + '/views');
 
 app.use(session);
 
-app.use(mainRouter);
-
 // passport
 
 import bcrypt from 'bcryptjs';
 import mainRouter from './routers/mainRouter.js';
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 passport.use(
-  new LocalStrategy(async (username, password, done) => {
-    const user = await prisma.user.findUnique({
-      where: {
-        username: username,
-      },
-    });
+  new LocalStrategy(
+    { usernameField: 'email', passwordField: 'password' },
+    async (username, password, done) => {
+      const user = await prisma.user.findUnique({
+        where: {
+          username: username,
+        },
+      });
 
-    if (!user) {
-      return done(null, false);
-    }
+      if (!user) {
+        return done(null, false);
+      }
 
-    const hashedPassword = user.password;
+      const hashedPassword = user.password;
 
-    const isCorrect = await bcrypt.compare(password, hashedPassword);
+      const isCorrect = await bcrypt.compare(password, hashedPassword);
 
-    if (isCorrect) {
-      return done(null, user);
-    } else {
-      return done(null, false);
-    }
-  }),
+      if (isCorrect) {
+        return done(null, user);
+      } else {
+        return done(null, false);
+      }
+    },
+  ),
 );
 
-// app.use();
+passport.serializeUser((user, done) => {
+  return done(null, user.id);
+});
 
-// passport
+passport.deserializeUser(async (id, done) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  return done(null, user);
+});
 
 app.get('/', (req, res) => {
   res.render('index');
 });
+
+app.use(mainRouter);
 
 const PORT = process.env.APP_PORT || 3000;
 app.listen(PORT, (error) => {
