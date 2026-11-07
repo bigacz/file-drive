@@ -4,6 +4,8 @@ import { matchedData, validationResult } from 'express-validator';
 import prisma from '../prisma/prisma.js';
 import bcrypt from 'bcryptjs';
 
+import multer from 'multer';
+
 const getLogin = (req, res) => {
   res.render('login');
 };
@@ -51,4 +53,21 @@ const postRegister = [
   },
 ];
 
-export default { getLogin, postLogin, getRegister, postRegister };
+const getUpload = [
+  (req, res) => {
+    res.render('upload');
+  },
+];
+
+const upload = multer({ dest: 'uploads/' });
+
+const postUpload = [upload.single('file'), (req, res) => {}];
+
+export default {
+  getLogin,
+  postLogin,
+  getRegister,
+  postRegister,
+  getUpload,
+  postUpload,
+};

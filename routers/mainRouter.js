@@ -11,4 +11,8 @@ mainRouter.get('/register', mainController.getRegister);
 
 mainRouter.post('/register', mainController.postRegister);
 
+mainRouter.get('/upload', mainController.getUpload);
+
+mainRouter.post('/upload', mainController.postUpload);
+
 export default mainRouter;
