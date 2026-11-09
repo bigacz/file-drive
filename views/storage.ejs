@@ -9,7 +9,33 @@
 
 <body>
   <%- include('./components/navbar') %>
-  <form action="/upload" method="POST" enctype="multipart/form-data">
+
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Folder</th>
+        <th>Uploaded</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+    <% if(locals.files) { %>
+    <% locals.files.forEach((file) => { %>
+    <tr>
+      <td><%= file.filename %></td>
+      <td><%= file.folder %></td>
+      <td><%= (file.uploadedAt).toLocaleString() %></td>
+    </tr>
+    <% }) %>
+    <% } else { %>
+    <p>You haven't uploaded any files yet!</p>
+    <% } %>
+  </table>
+
+  <form action="/storage" method="POST" enctype="multipart/form-data">
     <input type="file" name="file">
     <button type="submit">Send</button>
   </form>
