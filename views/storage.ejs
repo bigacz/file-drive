@@ -10,6 +10,13 @@
 <body>
   <%- include('./components/navbar') %>
 
+  <aside>
+    <div><a href="./storage"> / </a></div>
+    <% locals.folderNames.forEach((folder) => { %>
+    <div><a href="<%=`?folder=${folder}`%>"><%= folder %></a></div>
+    <% }) %>
+  </aside>
+
 
   <table>
     <thead>

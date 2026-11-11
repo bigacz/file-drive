@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 
 const loginValidators = [];
 
@@ -31,4 +31,14 @@ const registerValidators = [
     .escape(),
 ];
 
-export { loginValidators, registerValidators };
+const getIndexValidators = [
+  query('folder')
+    .isString()
+    .withMessage('Folder must be a string')
+    .optional()
+    .isLength({ max: 255 })
+    .withMessage('Folder must be a string of a maximal 255 characters')
+    .escape(),
+];
+
+export { loginValidators, registerValidators, getIndexValidators };
