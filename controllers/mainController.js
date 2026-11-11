@@ -3,6 +3,7 @@ import { registerValidators } from './validators.js';
 import { matchedData, validationResult } from 'express-validator';
 import prisma from '../prisma/prisma.js';
 import bcrypt from 'bcryptjs';
+import validationMiddleware from '../middleware/validationMiddleware.js';
 
 const getLogin = (req, res) => {
   res.render('login');
@@ -21,12 +22,8 @@ const getRegister = (req, res) => {
 
 const postRegister = [
   ...registerValidators,
+  validationMiddleware,
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json(errors);
-    }
-
     const { email, password } = matchedData(req);
 
     const existingUser = await prisma.user.findUnique({

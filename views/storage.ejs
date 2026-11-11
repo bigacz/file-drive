@@ -42,7 +42,7 @@
     <% } %>
   </table>
 
-  <form action="/storage" method="POST" enctype="multipart/form-data">
+  <form action="/storage?folder=<%=locals.currentFolder%>" method="POST" enctype="multipart/form-data">
     <input type="file" name="file">
     <button type="submit">Send</button>
   </form>

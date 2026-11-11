@@ -1,7 +1,8 @@
 import multer from 'multer';
 import prisma from '../prisma/prisma.js';
 import { matchedData, validationResult } from 'express-validator';
-import { getIndexValidators } from './validators.js';
+import { getIndexValidators, postIndexValidators } from './validators.js';
+import validationMiddleware from '../middleware/validationMiddleware.js';
 
 const getIndex = [
   (req, res, next) => {
@@ -12,12 +13,8 @@ const getIndex = [
     }
   },
   ...getIndexValidators,
+  validationMiddleware,
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json(errors);
-    }
-
     const { folder } = matchedData(req);
 
     let files;
@@ -54,12 +51,16 @@ const getIndex = [
 const upload = multer({ dest: 'uploads/' });
 
 const postIndex = [
+  ...postIndexValidators,
+  validationMiddleware,
   upload.single('file'),
   async (req, res) => {
+    let { folder } = matchedData(req);
+
     const createFile = await prisma.file.create({
       data: {
         ownerId: req.user.id,
-        folder: req.user.folder,
+        folder: folder.trim() === '' ? null : folder,
         filename: req.file.filename,
         originalFilename: req.file.originalname,
         mimetype: req.file.mimetype,
