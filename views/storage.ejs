@@ -10,36 +10,37 @@
 <body>
   <%- include('./components/navbar') %>
 
-  <aside>
-    <div><a href="./storage"> / </a></div>
-    <% locals.folderNames.forEach((folder) => { %>
-    <div><a href="<%=`?folder=${folder}`%>"><%= folder %></a></div>
-    <% }) %>
-  </aside>
-
-
   <table>
     <thead>
       <tr>
         <th>Name</th>
-        <th>Folder</th>
+        <th>Type</th>
         <th>Uploaded</th>
       </tr>
     </thead>
     <tbody>
 
     </tbody>
-    <% if(locals.files) { %>
-    <% locals.files.forEach((file) => { %>
+    <% if(locals.currentFolder.childFolders) { %>
+    <% locals.currentFolder.childFolders.forEach((folder) => { %>
+    <tr>
+      <td><a href="<%= `?folder=${locals.currentPath}/${folder.folderName}` %>"><%= folder.folderName %></a></td>
+      <td> Folder </td>
+    </tr>
+    <% }) %>
+    <% } %>
+
+
+    <% if(locals.currentFolder.files) { %>
+    <% locals.currentFolder.files.forEach((file) => { %>
     <tr>
       <td><%= file.filename %></td>
-      <td><%= file.folder %></td>
+      <td> File </td>
       <td><%= (file.uploadedAt).toLocaleString() %></td>
     </tr>
     <% }) %>
-    <% } else { %>
-    <p>You haven't uploaded any files yet!</p>
     <% } %>
+
   </table>
 
   <form action="/storage?folder=<%=locals.currentFolder%>" method="POST" enctype="multipart/form-data">

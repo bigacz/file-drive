@@ -17,34 +17,42 @@ const getIndex = [
   async (req, res) => {
     const { folder } = matchedData(req);
 
-    let files;
+    let whereStatement;
 
-    if (folder == null) {
-      files = await prisma.file.findMany({
-        where: {
-          ownerId: req.user.id,
-          folder: null,
-        },
-      });
-    } else {
-      files = await prisma.file.findMany({
-        where: {
-          ownerId: req.user.id,
-          folder: folder,
-        },
-      });
+    let path = folder;
+    if (!folder || folder.trim() === '') {
+      path = 'index';
     }
 
-    const folders = await prisma.file.findMany({
-      select: {
-        folder: true,
+    const folders = path.split('/').toReversed();
+
+    const currentFolderName = folders.shift();
+
+    whereStatement = {
+      folderName: currentFolderName,
+      ownerId: req.user.id,
+    };
+
+    const oldestFolder = folders.reduce((currentObject, folderName) => {
+      currentObject.parentFolder = {
+        folderName,
+        ownerId: req.user.id,
+      };
+
+      return currentObject.parentFolder;
+    }, whereStatement);
+
+    oldestFolder.parentFolderId = null;
+
+    const currentFolder = await prisma.folder.findFirst({
+      where: whereStatement,
+      include: {
+        files: true,
+        childFolders: true,
       },
-      distinct: ['folder'],
     });
 
-    const folderNames = folders.map((folder) => folder.folder);
-
-    res.render('storage', { files, folderNames, currentFolder: folder });
+    return res.render('storage', { currentFolder, currentPath: path });
   },
 ];
 
