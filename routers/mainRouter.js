@@ -1,10 +1,10 @@
 import router from 'express';
 import mainController from '../controllers/mainController.js';
-import storageRouter from './storageRouter.js';
+import folderRouter from './folderRouter.js';
 
 const mainRouter = router();
 
-mainRouter.use('/storage', storageRouter);
+mainRouter.use('/folder', folderRouter);
 
 mainRouter.get('/login', mainController.getLogin);
 

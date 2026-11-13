@@ -31,28 +31,4 @@ const registerValidators = [
     .escape(),
 ];
 
-const getIndexValidators = [
-  query('folder')
-    .isString()
-    .withMessage('Folder must be a string')
-    .optional()
-    .isLength({ max: 255 })
-    .withMessage('Folder must be a string of a maximal 255 characters'),
-];
-
-const postIndexValidators = [
-  query('folder')
-    .isString()
-    .withMessage('Folder must be a string')
-    .optional()
-    .isLength({ max: 255 })
-    .withMessage('Folder must be a string of a maximal 255 characters')
-    .escape(),
-];
-
-export {
-  loginValidators,
-  registerValidators,
-  getIndexValidators,
-  postIndexValidators,
-};
+export { loginValidators, registerValidators };
